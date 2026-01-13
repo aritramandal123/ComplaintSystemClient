@@ -23,7 +23,6 @@ The project follows the modern Next.js App Router conventions:
 ```
 /app
 ├── admin/              # Admin-specific routes
-│   ├── analytics/      # Analytics dashboard
 │   ├── home/           # Main admin dashboard (Kanban board)
 │   └── login/          # Admin login page
 ├── user/               # User-specific routes
