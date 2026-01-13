@@ -1,97 +1,185 @@
-# Complaint System Client - Detailed Documentation
+# Complaint System Client 🛡️
 
-## 1. System Overview
-The **Complaint System Client** is a frontend application built with **Next.js 16 (App Router)** and **React 19**. It serves as the user interface for a complaint management platform, catering to two distinct user roles:
--   **Users**: Can log in, submit complaints, and track their status.
--   **Admins**: Have a dashboard to view, manage, assign, and update complaints and view analytics.
+![Version](https://img.shields.io/badge/version-0.1.0-blue) ![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?logo=next.js) ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react) ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)
 
-The application interacts with an external backend API (currently hardcoded as `http://localhost:8800`) and uses **Client-Side Rendering (CSR)** for dynamic content, managed effectively via the Next.js App Router structure.
+## 📖 Introduction
+The **Complaint System Client** is a cutting-edge, enterprise-grade frontend application designed to streamline the lifecycle of organizational issue tracking. Built on the latest web technologies, it provides a dual-interface experience:
+1.  **User Portal**: For employees/clients to seamlessly lodge and track complaints.
+2.  **Admin Command Center**: A powerful Kanban-style dashboard for technicians and managers to triage, assign, and resolve issues in real-time, backed by data visualization.
 
-## 2. Technical Stack
--   **Framework**: Next.js 16.1.1 (App Router)
--   **UI Library**: React 19.2.3
--   **Styling**: Tailwind CSS v4
--   **Icons**: Lucide React
--   **State Management**: React `useState`, `useEffect` (Local State)
--   **Changes/Side Effects**: `js-cookie` for session management
--   **Visualizations**: Recharts (for Analytics)
+---
 
-## 3. Architecture & Data Flow
+## ✨ Key Features
 
-### 3.1 Directory Structure (App Router)
-The project follows the modern Next.js App Router conventions:
-```
-/app
-├── admin/              # Admin-specific routes
-│   ├── home/           # Main admin dashboard (Kanban board)
-│   └── login/          # Admin login page
-├── user/               # User-specific routes
-│   ├── home/           # User dashboard
-│   └── login/          # User login page
-├── landing/            # Landing page component
-├── components/         # Reusable UI components
-│   ├── admin/          # Admin specific components (QueueBoard, AnalyticsDashboard)
-│   └── loadingScreen.js
-├── layout.js           # Root layout
-├── page.js             # Root entry point (Handles redirection)
-└── globals.css         # Global styles & Tailwind directives
-```
+### For Administrators
+-   **Kanban Workflow**: Drag-and-drop style organization (pending implementation) with "Pending", "In Progress", and "Resolved" columns.
+-   **Live Analytics**: Real-time charts showing category breakdowns, status distribution, and critical issue tracking.
+-   **Personnel Database**: Searchable directory of employees for quick checking and assignment.
+-   **Inspection Module**: Deep-dive modal for every complaint to update priority, assign technicians, and add notes.
 
-### 3.2 Authentication Flow
-Authentication is handled entirely client-side using **cookies**.
--   **Login**:
-    -   User/Admin submits credentials to `POST /login/user` or `POST /login/admin`.
-    -   On success, the following cookies are set:
-        -   `token`: JWT or Session token.
-        -   `isLoggedIn`: Boolean flag ('true').
-        -   `userType`: 'user' or 'admin'.
-        -   `userId`: The unique ID of the logged-in entity.
--   **Route Protection**:
-    -   `app/page.js`: The root route checks cookies.
-        -   If `isLoggedIn` & `userType === 'user'` -> Redirects to `/user/home`.
-        -   If `isLoggedIn` & `userType === 'admin'` -> Redirects to `/admin/home`.
-        -   Else -> Shows Landing Page.
-    -   Individual pages (e.g., `/admin/home/page.js`) perform a secondary check in `useEffect` and redirect to `/` if unauthorized.
+### For Users
+-   **Secure Authentication**: Role-based access control ensuring data privacy.
+-   **Quick Submission**: Streamlined forms for rapid issue reporting.
+-   **Status Tracking**: Real-time updates on their submitted tickets.
 
-### 3.3 Data Fetching
-Data fetching is primarily **client-side** using `fetch` inside `useEffect` hooks.
--   **Base URL**: Hardcoded as `http://localhost:8800`.
--   **Authorization**: API requests include the `Authorization: Bearer <token>` header.
+---
 
-## 4. API Integration Points
-The application relies on the following backend endpoints:
+## 🛠️ Technical Architecture
 
-| Method | Endpoint | Description | Payload |
+### Tech Stack
+| Component | Technology | Version | Purpose |
 | :--- | :--- | :--- | :--- |
-| **POST** | `/login/user` | User Login | `{ email, password }` |
-| **POST** | `/login/admin` | Admin Login | `{ email, password }` |
-| **POST** | `/getInfo/adminInfo/` | Get Admin Profile | `{ id, userType: 'admin' }` |
-| **POST** | `/getInfo/admin/complaints/` | Fetch All Complaints | `{ id }` |
-| **POST** | `/getInfo/admin/employees/` | Fetch All Employees | `{ id }` |
-| **POST** | `/complaints/admin/update` | Update Complaint | `{ id, complaint: object }` |
+| **Framework** | Next.js (App Router) | 16.1.1 | Server/Client Component Orchestration |
+| **UI Engine** | React | 19.2.3 | Component Logic & State |
+| **Styling** | Tailwind CSS | v4 | Utility-first Design System |
+| **Icons** | Lucide React | Latest | Consistent Iconography |
+| **Charts** | Recharts | 3.x | Analytics Visualization |
+| **State** | React Hooks | - | Local UI State Management |
+| **Auth** | JS-Cookie | 3.x | Client-Side Session Persistence |
 
-## 5. Components Breakdown
+### Directory Structure
+The project uses the **Next.js App Router** structure, ensuring features are grouped by route.
 
-### 5.1 Admin Dashboard (`/app/admin/home`)
-The core of the admin experience.
--   **Features**:
-    -   **Kanban Board**: Columns for 'Pending', 'In Progress', 'Resolved'.
-    -   **Detailed View**: Modal to view complaint details, change priority, and assign technicians.
-    -   **Tab Switching**: Toggles between 'Queue' and 'Analytics' views.
--   **State**: Manages lists of complaints and employees locally. Polls/refreshes data using an `update` counter dependency in `useEffect`.
+```
+/
+├── app/                        # Application Source
+│   ├── admin/                  # Admin Module
+│   │   ├── analytics/          # Analytics Dashboard Page
+│   │   ├── home/               # Main Kanban Dashboard
+│   │   └── login/              # Admin Authentication
+│   ├── user/                   # User Module
+│   │   ├── home/               # User Dashboard
+│   │   └── login/              # User Authentication
+│   ├── landing/                # Public Landing Page
+│   ├── layout.js               # Root Application Shell
+│   ├── page.js                 # Auth Gate (Redirect Logic)
+│   └── globals.css             # Tailwind v4 & Global Styles
+├── components/                 # Shared UI Components
+│   ├── admin/                  # Admin-Specific Widgets
+│   │   ├── queueBoard.js       # The Core Kanban Board Logic
+│   │   └── analyticsDashboard.js # Charts & Graphs Component
+│   └── loadingScreen.js        # Global Fallback Spinner
+├── public/                     # Static Assets
+├── next.config.mjs             # Framework Configuration
+└── package.json                # Dependencies & Scripts
+```
 
-### 5.2 User Login (`/app/user/login`)
--   Standard login form.
--   Handles error messaging and cookie setting upon successful response.
+---
 
-### 5.3 Loading Screen (`/components/loadingScreen.js`)
--   A shared utility component used during data fetching and authentication checks to prevent flash-of-unstyled-content or unauthorized views.
+## 💾 Data Models
 
-## 6. Configuration
--   **Tailwind CSS**: Configured in `package.json` dependencies (v4). Use standard utility classes.
--   **Next.js Config**: `next.config.mjs` is present but currently standard/empty.
+The application relies on specific data structures to function.
 
-## 7. Development Guidelines
--   **Running**: `npm run dev`
--   **Building**: `npm run build`
--   **Linting**: `npm run lint`
+### 1. Complaint Object
+The core unit of work in the system.
+```typescript
+interface Complaint {
+  id: string;             // Unique Database Key (e.g., "64f...")
+  complaintId: string;    // Human Readable ID (e.g., "CMP-102")
+  title: string;          // Short summary
+  description: string;    // Full details
+  category: string;       // e.g., "Hardware", "Network"
+  priority: 'low' | 'medium' | 'high';
+  status: 'pending' | 'in-progress' | 'resolved';
+  technician?: string;    // Employee ID of assigned staff
+  date: string;           // ISO Date String or Formatted Date
+}
+```
+
+### 2. Employee Object
+Used for assignment and authorization.
+```typescript
+interface Employee {
+  employeeId: string;     // Unique ID (e.g., "EMP-001")
+  fullName: string;
+  role: string;           // e.g., "Technician", "Manager"
+  status: 'Active' | 'Inactive';
+}
+```
+
+---
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+-   **Node.js**: v18 or higher
+-   **NPM**: v9 or higher
+
+### Step-by-Step
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/your-org/complaint-system-client.git
+    cd complaint-system-client
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+    Access the app at `http://localhost:3000`.
+
+4.  **Backend Connection**
+    *Note: The application currently points to a local backend.*
+    Ensure your backend service is running on `http://localhost:8800`.
+    
+    > **Configuration**: Go to `app/admin/home/page.js` and `app/user/login/page.js` to update API endpoints if your backend runs on a different port.
+
+---
+
+## 📘 Component Reference
+
+### `QueueBoard.js`
+The heart of the Admin Home. 
+-   **Props**: `complaints` (Array), `employees` (Array), `onSaveChanges` (Function).
+-   **Functionality**: 
+    -   Renders three columns based on `status`.
+    -   Clicking a card opens the **Inspection Module**.
+    -   "View All" buttons expand a full-table view of that category.
+
+### `AnalyticsDashboard.js`
+Provides visual insights.
+-   **metrics**: 
+    -   **Total Logs**: Count of all records.
+    -   **Critical**: Count of 'high' priority issues.
+    -   **Staff Active**: Number of technicians currently assigned tasks.
+-   **Charts**: 
+    -   **Vertical Bar Chart**: Breakedown by Category (Network, Hardware, etc.).
+    -   **Pie Chart**: Status distribution (Pending vs Resolved).
+
+---
+
+## 🔐 Authentication & Security
+The app uses a **Cookie-Based** session strategy.
+
+1.  **Login**: User posts credentials. Backend returns a `token` and `userId`.
+2.  **Storage**: `js-cookie` stores `token`, `isLoggedIn`, `userType`, and `userId`.
+3.  **Protection**: 
+    -   `middleware` (logic in `app/page.js`) checks cookies on load.
+    -   If a User tries to access `/admin`, they are redirected to `/`.
+    -   If an unauthenticated user tries to access internal pages, they strike the `LoadingScreen` and are bounced to `/landing`.
+
+---
+
+## 🚧 Roadmap & Improvements
+-   [ ] **Dynamic Configuration**: Move API URLs to `.env` files.
+-   [ ] **Server Components**: Migrate client-side data fetching to React Server Components (RSC) for better performance.
+-   [ ] **Type Safety**: Migration to TypeScript for robust development.
+-   [ ] **Theme Toggle**: Add Dark/Light mode switcher (Tailwind support already enabled).
+
+---
+
+## 🤝 Contributing
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+© 2026 Complaint System Team. All Rights Reserved.
