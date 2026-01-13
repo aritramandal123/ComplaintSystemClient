@@ -190,6 +190,14 @@ const AdminHome = () => {
         setResolutionText('');
     };
 
+    const togglePriority = (newPriority) => {
+        if (!selectedComplaint) return;
+        const updatedComplaint = { ...selectedComplaint, priority: newPriority }
+        setSelectedComplaint(updatedComplaint)
+
+        setResolutionText('');
+    }
+
     const assignEmp = (employee) => {
         if (!selectedComplaint) return;
         const empId = employee.employeeId;
@@ -354,12 +362,23 @@ const AdminHome = () => {
                                                     <span className="text-xs text-slate-500">{selectedComplaint.date}</span>
                                                 </div>
                                             </div>
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${selectedComplaint.status === 'High'
+                                            {/* <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${selectedComplaint.status === 'High'
                                                 ? 'bg-red-50 text-red-600 border-red-100'
                                                 : 'bg-emerald-50 text-emerald-600 border-emerald-100'
                                                 }`}>
                                                 {selectedComplaint.priority || 'Standard'}_Priority
-                                            </span>
+                                            </span> */}
+                                            <button
+                                                onClick={togglePriority}
+                                                className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-all hover:scale-105 active:scale-95 cursor-pointer ${selectedComplaint.priority === 'High'
+                                                    ? 'bg-red-50 text-red-600 border-red-100 hover:bg-red-100'
+                                                    : selectedComplaint.priority === 'Low'
+                                                        ? 'bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100'
+                                                        : 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100'
+                                                    }`}
+                                            >
+                                                {selectedComplaint.priority || 'Standard'}_Priority
+                                            </button>
                                         </div>
 
                                         <hr className="border-slate-100" />
