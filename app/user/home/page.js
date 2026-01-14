@@ -194,13 +194,7 @@ const UserHome = () => {
 
                         <nav className="flex-1 p-4 space-y-1">
                             <button className="w-full flex items-center gap-3 p-2.5 text-xs font-bold uppercase tracking-wider bg-indigo-600 text-white shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all rounded-sm">
-                                <Plus size={16} /> New Ticket
-                            </button>
-                            <button className="w-full flex items-center gap-3 p-2.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-indigo-600 hover:bg-slate-50 transition-all rounded-sm mt-4">
-                                <Clock size={16} /> History
-                            </button>
-                            <button className="w-full flex items-center gap-3 p-2.5 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-indigo-600 hover:bg-slate-50 transition-all rounded-sm">
-                                <Activity size={16} /> Analytics
+                                <Plus size={16} /> Your Complaints
                             </button>
                         </nav>
 
