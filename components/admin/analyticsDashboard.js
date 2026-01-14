@@ -76,7 +76,7 @@ const AnalyticsDashboard = ({ complaints = [], employees = [] }) => {
                 <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm h-80 flex flex-col">
                     <h4 className="text-xs font-bold uppercase text-slate-500 mb-4">Status_Distribution</h4>
                     <ResponsiveContainer width="100%" height="100%">
-                        <PieChart><Pie data={statusData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">{statusData.map((e, i) => <Cell key={i} fill={e.color} />)}</Pie><Tooltip contentStyle={{ background: '#1e293b', border: 'none', color: '#fff' }} /></PieChart>
+                        <PieChart><Pie data={statusData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">{statusData.map((e, i) => <Cell key={i} fill={e.color} />)}</Pie><Tooltip contentStyle={{ background: '#1e293b', color: '#fff', border: 'none' }} /></PieChart>
                     </ResponsiveContainer>
                 </div>
             </div>

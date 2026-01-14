@@ -1,11 +1,12 @@
 import Cookies from 'js-cookie';
 export const complaintFormSubmit = (title, category, description, setUpdate) => {
     const userId = Cookies.get('userId');
+    const URL = process.env.NEXT_PUBLIC_API_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8800/complaints/user/submit', {
+            const response = await fetch(`${URL}/complaints/user/submit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Cookies.get('token')}` },
                 body: JSON.stringify({ userId, title, category, description }),

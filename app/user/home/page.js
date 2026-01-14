@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import LoadingScreen from '../../../components/loadingScreen';
 
 const UserHome = () => {
-
+    // --- STATE MANAGEMENT ---
     const [userData, setUserData] = React.useState(null);
     const [complaints, setComplaints] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
@@ -24,12 +24,13 @@ const UserHome = () => {
     const [isCheckingAuth, setIsCheckingAuth] = React.useState(true);
     const router = useRouter();
 
+    const URL = process.env.NEXT_PUBLIC_API_URL;
+
+    // --- UTILITY FUNCTIONS ---
     const updateComplaintCounts = (complaintsList) => {
-        console.log("Updating complaint counts...");
         let pending = 0;
         let resolved = 0;
         let inProgress = 0;
-        console.log("Complaints List:", complaintsList);
 
         complaintsList.forEach(complaint => {
             if (complaint.status === "pending") pending++;
@@ -40,9 +41,9 @@ const UserHome = () => {
         setPendingComplaintsCount(pending);
         setResolvedComplaintsCount(resolved);
         setInProgressComplaintsCount(inProgress);
-        console.log(`Counts - Pending: ${pending}, Resolved: ${resolved}, In Progress: ${inProgress}`);
     };
 
+    // --- API INTERACTIONS ---
     const fetchuserInfo = async () => {
         const userId = Cookies.get('userId');
         if (!userId) {
@@ -50,7 +51,7 @@ const UserHome = () => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8800/getInfo/userInfo/', {
+            const response = await fetch(`${URL}/getInfo/userInfo/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Cookies.get('token')}` },
                 body: JSON.stringify({ id: userId }),
@@ -67,7 +68,7 @@ const UserHome = () => {
     const getComplaints = async () => {
         const userId = Cookies.get('userId');
         try {
-            const response = await fetch('http://localhost:8800/getInfo/user/complaints', {
+            const response = await fetch(`${URL}/getInfo/user/complaints`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Cookies.get('token')}` },
                 body: JSON.stringify({ id: userId, userType: 'user' }),
@@ -80,6 +81,7 @@ const UserHome = () => {
         }
     };
 
+    // --- EVENT HANDLERS ---
     const handleLogout = () => {
         Cookies.remove('userId');
         Cookies.remove('token');
@@ -93,6 +95,7 @@ const UserHome = () => {
         setIsModalOpen(true);
     };
 
+    // --- LIFECYCLE EFFECTS ---
     React.useEffect(() => {
         fetchuserInfo();
         getComplaints();
@@ -109,6 +112,7 @@ const UserHome = () => {
         }
     }, [router]);
 
+    // --- RENDER LOGIC ---
     if (loading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-white text-indigo-600 font-mono">
@@ -122,7 +126,6 @@ const UserHome = () => {
         email: userData?.email || "N/A"
     };
 
-
     if (isCheckingAuth) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -133,7 +136,7 @@ const UserHome = () => {
     else {
         return (
             <>
-                {/* MODAL SECTION - Overlayed over everything */}
+                {/* COMPLAINT DETAILS MODAL */}
                 {isModalOpen && selectedComplaint && (
                     <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                         <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
@@ -179,8 +182,8 @@ const UserHome = () => {
                     </div>
                 )}
 
-                {/* MAIN LAYOUT */}
                 <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
+                    {/* SIDEBAR NAVIGATION */}
                     <aside className="w-64 border-r border-slate-200 bg-white hidden md:flex flex-col">
                         <div className="p-6 flex items-center gap-3 border-b border-slate-100">
                             <div className="bg-slate-900 text-white p-1 rounded-sm">
@@ -209,6 +212,7 @@ const UserHome = () => {
                     </aside>
 
                     <main className="flex-1 flex flex-col">
+                        {/* TOP HEADER BAR */}
                         <header className="h-16 border-b border-slate-200 flex items-center justify-between px-8 bg-white sticky top-0 z-10">
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-sm border border-slate-200">
@@ -233,6 +237,7 @@ const UserHome = () => {
                         </header>
 
                         <div className="p-8 grid grid-cols-12 gap-8 max-w-7xl mx-auto w-full">
+                            {/* COMPLAINT SUBMISSION FORM */}
                             <section className="col-span-12 lg:col-span-4 space-y-6">
                                 <div className="bg-white border border-slate-200 p-6 rounded-sm shadow-sm">
                                     <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-800 mb-6 flex items-center gap-2">
@@ -241,18 +246,15 @@ const UserHome = () => {
                                     <form
                                         onSubmit={(e) => {
                                             e.preventDefault();
-
-                                            // Live Validation Check
                                             const newErrors = {};
                                             if (!title.trim()) newErrors.title = "Subject is required";
                                             if (!description.trim()) newErrors.description = "Description is required";
 
                                             if (Object.keys(newErrors).length > 0) {
                                                 setErrors(newErrors);
-                                                return; // Prevent submission
+                                                return;
                                             }
 
-                                            // Clear errors and proceed
                                             setErrors({});
                                             complaintFormSubmit(title, category, description, setUpdate)(e);
                                             setTitle('');
@@ -260,7 +262,6 @@ const UserHome = () => {
                                         }}
                                         className="space-y-5"
                                     >
-                                        {/* SUBJECT LINE */}
                                         <div>
                                             <label className={`text-[10px] font-bold uppercase mb-1.5 block transition-colors ${errors.title ? 'text-red-500' : 'text-slate-400'}`}>
                                                 Subject Line {errors.title && <span className="lowercase italic opacity-70">— {errors.title}</span>}
@@ -268,10 +269,7 @@ const UserHome = () => {
                                             <input
                                                 type="text"
                                                 value={title}
-                                                className={`w-full bg-white border p-3 text-xs text-slate-800 outline-none transition-all placeholder:text-slate-300 font-mono ${errors.title
-                                                    ? 'border-red-500 ring-1 ring-red-50'
-                                                    : 'border-slate-200 focus:border-indigo-600'
-                                                    }`}
+                                                className={`w-full bg-white border p-3 text-xs text-slate-800 outline-none transition-all placeholder:text-slate-300 font-mono ${errors.title ? 'border-red-500 ring-1 ring-red-50' : 'border-slate-200 focus:border-indigo-600'}`}
                                                 placeholder="Brief issue title"
                                                 onChange={(e) => {
                                                     setTitle(e.target.value);
@@ -280,7 +278,6 @@ const UserHome = () => {
                                             />
                                         </div>
 
-                                        {/* CATEGORY CLASS */}
                                         <div>
                                             <label className="text-[10px] font-bold uppercase text-slate-400 mb-1.5 block">Category Class</label>
                                             <div className="relative">
@@ -299,7 +296,6 @@ const UserHome = () => {
                                             </div>
                                         </div>
 
-                                        {/* FULL MANIFEST */}
                                         <div>
                                             <label className={`text-[10px] font-bold uppercase mb-1.5 block transition-colors ${errors.description ? 'text-red-500' : 'text-slate-400'}`}>
                                                 Full Manifest {errors.description && <span className="lowercase italic opacity-70">— {errors.description}</span>}
