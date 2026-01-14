@@ -11,6 +11,7 @@ const Login = () => {
   const [message, setMessage] = useState({ text: '', isError: false });
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const router = useRouter();
+  const [isloginLoading, setIsloginLoading] = useState(false);
 
   const URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,6 +23,7 @@ const Login = () => {
     e.preventDefault();
     setMessage({ text: '', isError: false });
     try {
+      setIsloginLoading(true);
       const response = await fetch(`${URL}/login/user`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,15 +35,18 @@ const Login = () => {
       if (response.ok) {
         // Persist authentication state in cookies
         setMessage({ text: `Success! User ID: ${data.userId}`, isError: false });
+        setIsloginLoading(false);
         Cookies.set('token', data.token, { path: '/' });
         Cookies.set('isLoggedIn', 'true', { path: '/' });
         Cookies.set('userType', 'user', { path: '/' });
         Cookies.set('userId', data.userId, { path: '/' });
         router.push('/user/home');
       } else {
+        setIsloginLoading(false);
         setMessage({ text: data.message || 'Invalid credentials', isError: true });
       }
     } catch (error) {
+      setIsloginLoading(false);
       setMessage({ text: 'Server connection failed', isError: true });
     }
   };
@@ -108,7 +113,7 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300 transform hover:-translate-y-0.5"
           >
-            Sign In
+            {isloginLoading ? 'Logging in <LoadingScreen />' : 'Login'}
           </button>
         </form>
 
