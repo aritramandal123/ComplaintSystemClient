@@ -113,7 +113,16 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition duration-300 transform hover:-translate-y-0.5"
           >
-            {isloginLoading ? (<LoadingScreen />) : 'Login'}
+            {isloginLoading ? (<span className="flex items-center justify-center gap-2">
+              <span className="inline-flex items-center">
+                Logging in
+                <span className="flex ml-1">
+                  <span className="animate-[bounce_1s_infinite_100ms] text-current">.</span>
+                  <span className="animate-[bounce_1s_infinite_200ms] text-current">.</span>
+                  <span className="animate-[bounce_1s_infinite_300ms] text-current">.</span>
+                </span>
+              </span>
+            </span>) : 'Login'}
           </button>
         </form>
 

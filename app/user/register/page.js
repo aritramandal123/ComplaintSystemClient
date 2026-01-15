@@ -6,7 +6,9 @@ import LoadingScreen from '../../../components/loadingScreen';
 
 const Login = () => {
     // State management for form inputs and UI feedback
+    const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState({ text: '', isError: false });
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -19,16 +21,16 @@ const Login = () => {
      * Handles the admin login process
      * @param {Event} e - Form submission event
      */
-    const handleLogin = async (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         setMessage({ text: '', isError: false });
 
         try {
             setIsloginLoading(true);
-            const response = await fetch(`${URL}/login/admin`, {
+            const response = await fetch(`${URL}/register/user`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ fullName, email, phoneNumber, password }),
             });
 
             const data = await response.json();
@@ -75,26 +77,48 @@ const Login = () => {
         );
     }
 
-    // Render the Admin Login UI
+    // Render the User Register UI
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
             <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
                 {/* Header Section */}
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-800">Welcome Admin</h2>
-                    <p className="text-gray-500 mt-2">Please enter your credentials</p>
+                    <h2 className="text-3xl font-bold text-gray-800">Sign Up as new User</h2>
+                    <p className="text-gray-500 mt-2">Please enter your details</p>
                 </div>
 
                 {/* Login Form */}
-                <form onSubmit={handleLogin} className="space-y-6">
+                <form onSubmit={handleSignUp} className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input
+                            type="text"
+                            className="mt-1 block w-full px-4 py-3 text-gray-600 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            placeholder="Enter Full Name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Email Address</label>
                         <input
                             type="email"
                             className="mt-1 block w-full px-4 py-3 text-gray-600 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-                            placeholder="name@company.com"
+                            placeholder="Enter Email Address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input
+                            type="text"
+                            className="mt-1 block w-full px-4 py-3 text-gray-600 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            placeholder="Enter Phone Number"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             required
                         />
                     </div>
