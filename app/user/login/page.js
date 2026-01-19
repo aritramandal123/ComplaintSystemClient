@@ -137,6 +137,9 @@ const Login = () => {
         <div className="mt-8 text-center text-sm text-gray-600">
           Not a user? <a href="/admin" className="text-blue-600 hover:underline font-medium">Login as Admin</a>
         </div>
+        <div className="mt-8 text-center text-sm text-gray-600">
+          Don't have an account? <a href="/user/register" className="text-blue-600 hover:underline font-medium">Register as User</a>
+        </div>
       </div>
     </div>
   );
