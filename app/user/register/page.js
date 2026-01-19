@@ -41,11 +41,11 @@ const Login = () => {
                 setMessage({ text: `Success! User ID: ${data.userId}`, isError: false });
                 Cookies.set('token', data.token, { path: '/' });
                 Cookies.set('isLoggedIn', 'true', { path: '/' });
-                Cookies.set('userType', 'admin', { path: '/' });
+                Cookies.set('userType', 'user', { path: '/' });
                 Cookies.set('userId', data.userId, { path: '/' });
 
                 // Redirect to admin dashboard
-                router.push('/admin/home');
+                router.push('/user/home');
             } else {
                 setIsloginLoading(false);
                 setMessage({ text: data.message || 'Invalid credentials', isError: true });
@@ -141,14 +141,14 @@ const Login = () => {
                     >
                         {isloginLoading ? (<span className="flex items-center justify-center gap-2">
                             <span className="inline-flex items-center">
-                                Logging in
+                                Signing Up
                                 <span className="flex ml-1">
                                     <span className="animate-[bounce_1s_infinite_100ms] text-current">.</span>
                                     <span className="animate-[bounce_1s_infinite_200ms] text-current">.</span>
                                     <span className="animate-[bounce_1s_infinite_300ms] text-current">.</span>
                                 </span>
                             </span>
-                        </span>) : 'Login'}
+                        </span>) : 'Sign Up'}
                     </button>
                 </form>
 
