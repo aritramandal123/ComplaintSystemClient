@@ -60,8 +60,6 @@ const UserHome = () => {
             if (response.ok) setUserData(result.profile);
         } catch (error) {
             console.error('Error fetching user profile:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -78,6 +76,8 @@ const UserHome = () => {
             updateComplaintCounts(result.complaints);
         } catch (error) {
             console.error('Error fetching complaints:', error);
+        } finally {
+            setLoading(false);
         }
     };
 

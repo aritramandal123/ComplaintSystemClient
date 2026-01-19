@@ -62,6 +62,8 @@ const AdminHome = () => {
             if (response.ok) setComplaints(result.complaints);
         } catch (error) {
             console.error('Error fetching complaints:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
